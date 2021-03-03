@@ -1,0 +1,231 @@
+openapi: 3.0.0
+info:
+  title: Topic Curation API
+  description: Documentation for Topic Curation REST API endpoints
+  contact:
+    name: Wikimedia Foundation
+  version: '1.0'
+servers:
+  - url: 'https://api.wikimedia.org'
+tags:
+  - name: Topics
+  - name: Suggested Topics
+  - name: Curated Topics
+paths:
+  '/topics/v0/{lang}/{wiki}/pages/{title}/{revid}':
+    parameters:
+      - $ref: '#/components/parameters/lang'
+      - $ref: '#/components/parameters/wiki'
+      - $ref: '#/components/parameters/title'
+      - $ref: '#/components/parameters/revid'
+    get:
+      summary: Get Topics
+      operationId: getTopics
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  topics:
+                    $ref: '#/components/schemas/topics'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+      description: Retrieve the suggested and curated topics for the given revision of the given page.
+  '/curatedTopics/v0/{lang}/{wiki}/pages/{title}/{revid}':
+    parameters:
+      - $ref: '#/components/parameters/lang'
+      - $ref: '#/components/parameters/wiki'
+      - $ref: '#/components/parameters/title'
+      - $ref: '#/components/parameters/revid'
+    post:
+      summary: Add Curated Topics
+      operationId: addCuratedTopics
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  topics:
+                    $ref: '#/components/schemas/topics'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+      description: Add curated topics for the given revision of the given page.
+  '/suggestdedTopics/v0/{lang}/{wiki}/pages/{title}/{revid}':
+    parameters:
+      - $ref: '#/components/parameters/lang'
+      - $ref: '#/components/parameters/wiki'
+      - $ref: '#/components/parameters/title'
+      - $ref: '#/components/parameters/revid'
+    post:
+      summary: Add Suggested Topics
+      operationId: addSuggestedTopics
+      tags: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/topics'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/problem'
+      description: Add suggested topics for the given revision of the given page.
+components:
+  schemas:
+    topics:
+      type: object
+      properties:
+        sections:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            type: object
+            properties:
+              section_title:
+                type: string
+                minLength: 1
+              section_id:
+                type: string
+                minLength: 1
+              curated_topics:
+                $ref: '#/components/schemas/topicArray'
+              suggested_topics:
+                $ref: '#/components/schemas/topicArray'
+            required:
+              - section_title
+              - section_id
+      required:
+        - sections
+    topicArray:
+      title: topicArray
+      type: array
+      uniqueItems: true
+      minItems: 1
+      items:
+        type: object
+        properties:
+          label:
+            type: string
+            minLength: 1
+          id:
+            type: string
+            minLength: 1
+        required:
+          - label
+          - id
+    problem:
+      title: problem
+      type: object
+      properties:
+        detail:
+          type: string
+          minLength: 1
+  parameters:
+    lang:
+      name: lang
+      in: path
+      required: true
+      schema:
+        type: string
+      description: |
+        Wiki language abbrvation. Example: `en` or `es`.
+    wiki:
+      name: wiki
+      in: path
+      required: true
+      schema:
+        type: string
+      description: |
+        Wiki name. Example `wikipedia` or `wiktionary`.
+    title:
+      name: title
+      in: path
+      required: true
+      schema:
+        type: string
+      description: |
+        Page title. Use underscores instead of spaces. Example: `Main_Page`
+    revid:
+      name: revid
+      in: path
+      required: true
+      schema:
+        type: string
+      description: |
+        Revision id of page.
