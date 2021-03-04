@@ -67,16 +67,23 @@ paths:
       summary: Add Curated Topics
       operationId: addCuratedTopics
       tags: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                section_title:
+                  type: string
+                  minLength: 1
+                section_id:
+                  type: string
+                  minLength: 1
+                topics:
+                  $ref: '#/components/schemas/topicArray'
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  topics:
-                    $ref: '#/components/schemas/topicArray'
         '400':
           description: Bad Request
           content:
@@ -116,7 +123,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/topicArray'
+              type: object
+              properties:
+                section_title:
+                  type: string
+                  minLength: 1
+                section_id:
+                  type: string
+                  minLength: 1
+                topics:
+                  $ref: '#/components/schemas/topicArray'
       responses:
         '200':
           description: OK
