@@ -28,10 +28,25 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  topics:
-                    $ref: '#/components/schemas/topics'
+                type: array
+                uniqueItems: true
+                minItems: 1
+                items:
+                  type: object
+                  properties:
+                    section_title:
+                      type: string
+                      minLength: 1
+                    section_id:
+                      type: string
+                      minLength: 1
+                    curated_topics:
+                      $ref: '#/components/schemas/topics'
+                    suggested_topics:
+                      $ref: '#/components/schemas/topics'
+                  required:
+                    - section_title
+                    - section_id
         '400':
           description: Bad Request
           content:
@@ -71,16 +86,23 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                section_title:
-                  type: string
-                  minLength: 1
-                section_id:
-                  type: string
-                  minLength: 1
-                topics:
-                  $ref: '#/components/schemas/topicArray'
+              type: array
+              uniqueItems: true
+              minItems: 1
+              items:
+                type: object
+                properties:
+                  section_title:
+                    type: string
+                    minLength: 1
+                  section_id:
+                    type: string
+                    minLength: 1
+                  topics:
+                    $ref: '#/components/schemas/topics'
+                required:
+                  - section_title
+                  - section_id
       responses:
         '200':
           description: OK
@@ -123,16 +145,23 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                section_title:
-                  type: string
-                  minLength: 1
-                section_id:
-                  type: string
-                  minLength: 1
-                topics:
-                  $ref: '#/components/schemas/topicArray'
+              type: array
+              uniqueItems: true
+              minItems: 1
+              items:
+                type: object
+                properties:
+                  section_title:
+                    type: string
+                    minLength: 1
+                  section_id:
+                    type: string
+                    minLength: 1
+                  topics:
+                    $ref: '#/components/schemas/topics'
+                required:
+                  - section_title
+                  - section_id
       responses:
         '200':
           description: OK
@@ -164,32 +193,7 @@ paths:
 components:
   schemas:
     topics:
-      type: object
-      properties:
-        sections:
-          type: array
-          uniqueItems: true
-          minItems: 1
-          items:
-            type: object
-            properties:
-              section_title:
-                type: string
-                minLength: 1
-              section_id:
-                type: string
-                minLength: 1
-              curated_topics:
-                $ref: '#/components/schemas/topicArray'
-              suggested_topics:
-                $ref: '#/components/schemas/topicArray'
-            required:
-              - section_title
-              - section_id
-      required:
-        - sections
-    topicArray:
-      title: topicArray
+      title: topics
       type: array
       uniqueItems: true
       minItems: 1
@@ -207,11 +211,8 @@ components:
           - id
     problem:
       title: problem
-      type: object
-      properties:
-        detail:
-          type: string
-          minLength: 1
+      type: string
+      minLength: 1
   parameters:
     lang:
       name: lang
